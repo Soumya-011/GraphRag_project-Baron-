@@ -1,0 +1,19 @@
+/* Shared by the user page and the developer page: upload progress rows */
+.up-list { list-style: none; margin: 10px 0 0; padding: 0; display: grid; gap: 8px; }
+.up-row { border: 1px solid var(--line); border-radius: 8px; padding: 8px 10px; background: var(--bg); }
+.up-head { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 2px 8px; font-size: 0.9rem; }
+.up-name { font-weight: 600; overflow-wrap: anywhere; min-width: 40%; }
+.up-stage { color: var(--muted); font-size: 0.85rem; }
+.up-bar { height: 6px; border-radius: 999px; background: var(--line); margin-top: 6px; overflow: hidden; }
+.up-bar > i { display: block; height: 100%; width: 0; background: var(--accent); transition: width .4s ease; }
+.up-row.done .up-bar > i { background: var(--ok); }
+.up-row.skipped .up-bar > i { background: var(--muted); }
+.up-row.error .up-bar > i { background: var(--bad); }
+.up-row.busy .up-bar > i { background-image: linear-gradient(90deg, transparent, rgba(255,255,255,.45), transparent); background-size: 200% 100%; animation: up-shimmer 1.4s linear infinite; }
+.up-row.ready .up-bar > i { background-color: var(--ok); }
+.up-row.ready .up-stage { color: var(--ok); }
+@keyframes up-shimmer { from { background-position: 200% 0; } to { background-position: -200% 0; } }
+.up-note { margin-top: 4px; font-size: 0.82rem; color: var(--muted); overflow-wrap: anywhere; }
+.up-row.error .up-note, .up-error { color: var(--bad); }
+.up-summary { margin-top: 8px; font-size: 0.88rem; }
+@media (prefers-reduced-motion: reduce) { .up-row.busy .up-bar > i, .up-bar > i { animation: none; transition: none; } }

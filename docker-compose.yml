@@ -1,0 +1,27 @@
+services:
+  neo4j:
+    image: neo4j:5-community
+    container_name: graphrag-neo4j
+    ports:
+      - "7474:7474"
+      - "7687:7687"
+    environment:
+      NEO4J_AUTH: neo4j/${NEO4J_PASSWORD}
+      DB_PASS: ${NEO4J_PASSWORD}   # only for the healthcheck (a NEO4J_PASSWORD variable would crash Neo4j)
+      # Memory caps for an 8 GB machine (defaults can use 1.5 GB+ of heap)
+      NEO4J_server_memory_heap_initial__size: 256m
+      NEO4J_server_memory_heap_max__size: 512m
+      NEO4J_server_memory_pagecache_size: 128m
+    mem_limit: 1400m
+    volumes:
+      - neo4j_data:/data
+    healthcheck:
+      test: ["CMD-SHELL", "cypher-shell -u neo4j -p \"$$DB_PASS\" 'RETURN 1' || exit 1"]
+      interval: 10s
+      timeout: 10s
+      retries: 12
+      start_period: 60s
+    restart: unless-stopped
+
+volumes:
+  neo4j_data:

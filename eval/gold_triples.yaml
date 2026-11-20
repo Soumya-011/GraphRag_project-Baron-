@@ -1,0 +1,51 @@
+# Hand-labelled graph for the 5 files in data/raw/ (what a perfect extraction would produce).
+# gold:     must be extracted (counts for recall and precision)
+# optional: reasonable to extract, never counted as wrong (counts for precision only)
+# Format: [source, relation, target, status]; entity types are in `entities`.
+
+entities:
+  Person: [Aarav Mehta, Priya Nair, Rohan Kapoor, Isha Verma, Vikram Rao, Kavya Iyer]
+  Company: [NovaTech Labs, Meridian Capital, GreenGrid Energy, SunArc Power, Orbit Systems]
+  Location: [Pune, Mumbai, Bengaluru, Chennai, Hyderabad]
+
+gold:
+  # novatech_profile.md
+  - [Aarav Mehta, FOUNDED, NovaTech Labs, current]
+  - [Priya Nair, FOUNDED, NovaTech Labs, current]
+  - [Aarav Mehta, CEO_OF, NovaTech Labs, current]
+  - [Priya Nair, WORKS_AT, NovaTech Labs, current]
+  - [NovaTech Labs, LOCATED_IN, Pune, current]
+  - [Meridian Capital, INVESTED_IN, NovaTech Labs, current]
+  - [Kavya Iyer, WORKS_AT, NovaTech Labs, current]
+  - [Kavya Iyer, WORKS_AT, Orbit Systems, past]
+  - [SunArc Power, PARTNERED_WITH, NovaTech Labs, current]
+  # meridian_capital.txt
+  - [Meridian Capital, LOCATED_IN, Mumbai, current]
+  - [Rohan Kapoor, WORKS_AT, Meridian Capital, current]
+  - [Rohan Kapoor, WORKS_AT, NovaTech Labs, current]
+  - [Meridian Capital, INVESTED_IN, GreenGrid Energy, current]
+  # greengrid_news.txt
+  - [SunArc Power, ACQUIRED, GreenGrid Energy, current]
+  - [GreenGrid Energy, LOCATED_IN, Bengaluru, current]
+  - [Isha Verma, CEO_OF, GreenGrid Energy, current]
+  - [Priya Nair, WORKS_AT, GreenGrid Energy, past]
+  # people_notes.md
+  - [Aarav Mehta, WORKS_AT, Orbit Systems, past]
+  - [Orbit Systems, LOCATED_IN, Hyderabad, current]
+  - [Isha Verma, FOUNDED, GreenGrid Energy, current]
+  - [Vikram Rao, WORKS_AT, Orbit Systems, past]
+  # sunarc_power.txt
+  - [SunArc Power, LOCATED_IN, Chennai, current]
+  - [Vikram Rao, CEO_OF, SunArc Power, current]
+
+optional:
+  - [Isha Verma, WORKS_AT, SunArc Power, current]      # joins the SunArc board
+  - [Isha Verma, WORKS_AT, GreenGrid Energy, current]
+  - [Isha Verma, WORKS_AT, GreenGrid Energy, past]
+  - [Vikram Rao, WORKS_AT, SunArc Power, current]
+  - [Aarav Mehta, WORKS_AT, NovaTech Labs, current]
+  - [Priya Nair, CEO_OF, NovaTech Labs, current]
+  - [Priya Nair, WORKS_AT, GreenGrid Energy, current]
+  - [Kavya Iyer, WORKS_AT, Orbit Systems, current]
+  - [Meridian Capital, INVESTED_IN, GreenGrid Energy, past]
+  - [Rohan Kapoor, CEO_OF, Meridian Capital, current]

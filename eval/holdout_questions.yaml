@@ -1,0 +1,20 @@
+# Unseen phrasings, written AFTER the main cue lists were tuned. Route only (no answers).
+# Used by tests/test_routing_set.py to check that the cues generalize beyond eval/questions.yaml.
+- {id: u01, q: "Which firm backed GreenGrid Energy early on?", route: graph}
+- {id: u02, q: "Who runs SunArc Power?", route: graph}
+- {id: u03, q: "What does NovaTech Labs make?", route: vector}
+- {id: u04, q: "Who leads Meridian Capital?", route: graph}
+- {id: u05, q: "Who is the CTO of NovaTech Labs?", route: graph}
+- {id: u06, q: "What year did SunArc Power start?", route: vector}
+- {id: u07, q: "How big is SunArc Power?", route: vector}
+- {id: u08, q: "Which company employs Kavya Iyer?", route: graph}
+- {id: u09, q: "Is GreenGrid Energy a subsidiary of SunArc Power?", route: graph}
+- {id: u10, q: "What did SunArc Power purchase in 2025?", route: [graph, hybrid]}
+- {id: u11, q: "Which company supplies the chips for the SunArc Power smart meters?", route: [hybrid, vector]}
+- {id: u12, q: "Tell me about GreenGrid Energy", route: vector}
+- {id: u13, q: "Who sits on the SunArc Power board?", route: graph}
+- {id: u14, q: "Is Isha Verma associated with SunArc Power?", route: graph}
+- {id: u15, q: "What is the relationship between Meridian Capital and SunArc Power?", route: graph}
+- {id: u16, q: "How many people work at SunArc Power?", route: [vector, hybrid]}
+- {id: u17, q: "What is the headcount at GreenGrid Energy?", route: vector}
+- {id: u18, q: "Who co-founded NovaTech Labs?", route: graph}

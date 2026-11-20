@@ -1,0 +1,222 @@
+node_labels: [Person, Company, Location, Document]
+
+relation_rules:
+  WORKS_AT:       {source: Person,  target: Company,  hint: "employee, executive, director or board member; include past roles"}
+  FOUNDED:        {source: Person,  target: Company,  hint: "founder or co-founder"}
+  CEO_OF:         {source: Person,  target: Company,  hint: "chief executive"}
+  INVESTED_IN:    {source: Company, target: Company,  hint: "investor to investee"}
+  ACQUIRED:       {source: Company, target: Company,  hint: "acquirer to acquired company"}
+  PARTNERED_WITH: {source: Company, target: Company,  hint: "partnership or collaboration"}
+  LOCATED_IN:     {source: Company, target: Location, hint: "headquartered or based in"}
+
+# manual entity overrides: alias -> canonical name
+aliases: {}
+
+# ---------------------------------------------------------------------------------------------
+# Extra node types: switch them on in .env with  EXTRA_NODE_TYPES=Year   (or Year,Industry ...)
+# A relation rule is generated automatically for every type listed there (default name IN_<TYPE>,
+# allowed sources = every normal node type). This section only FINE-TUNES a type; a type that is not
+# described here still works with the defaults. After switching a type on, re-extract the documents:
+#     python -m app.ingest --graph-only --force
+# ---------------------------------------------------------------------------------------------
+extra_node_types:
+  Year:
+    relation: IN_YEAR                      # name of the generated relation
+    from: [Person, Company, Location]      # which node types may carry an event in a year
+    pattern: '(?:1[0-9]{3}|20[0-9]{2})'    # the node name becomes the first match, so "March 2010" -> 2010
+    hint: "the year in which a fact or event happened; use it only when the text states the year"
+    text: "has an event in the year"       # how the fact reads in the context given to the answer model
+    in_text: "events involving"            # the same fact seen from the Year node
+    multi: true                            # many events can link the same entity and year (one edge per quote)
+
+# Optional prompt overrides (leave a key out, or empty, to keep the built-in text).
+# Keep the placeholders:  vector needs {not_found};  extraction needs {relations} {types} {extra_rules}
+prompts:
+  vector: ""
+  graph_rules: ""
+  extraction: ""
+
+# Phase 6 router (app/router.py). Cues are matched as whole words/phrases on the normalised
+# question (lower-case, punctuation and hyphens become spaces: "co-founded" -> "co founded").
+# Graph cue only -> graph. Vector cue only -> vector. Both -> hybrid.
+# The graph stores relationships only (no dates, amounts or descriptions), so anything asking for
+# a date, amount or description needs the documents: that is what the vector cues mark.
+# Tune with: GET /route?q=...   Check all cues: pytest tests/test_routing_set.py
+router:
+  # words that appear inside many company names; one of them alone never links a company
+  generic_words: []
+  graph_cues:
+    # founders and leadership
+    - founded
+    - founder
+    - founders
+    - found
+    - co founder
+    - co founded
+    - cofounder
+    - started by
+    - ceo
+    - cto
+    - chief executive
+    - chief technology officer
+    - managing partner
+    - board member
+    - board of
+    - sits on
+    - led by
+    - headed by
+    - who leads
+    - who runs
+    # investment
+    - invested in
+    - invest in
+    - investor
+    - investors
+    - backed by
+    - backers
+    - backed
+    - funded by
+    - funding from
+    - stake in
+    # acquisition
+    - acquired
+    - acquire
+    - acquisition
+    - bought
+    - takeover
+    - buy
+    - buys
+    - purchase
+    - purchased
+    - subsidiary
+    - parent company
+    # partnership
+    - partnered with
+    - partner with
+    - partnership with
+    - work together
+    - collaborate
+    - collaborates with
+    # employment
+    - works at
+    - work at
+    - worked at
+    - works for
+    - worked for
+    - employer
+    - employs
+    - employed
+    - employee of
+    - join
+    - joined
+    # location
+    - headquartered
+    - headquarters
+    - based in
+    - located in
+    - located
+    # connections and multi-hop
+    - linked to
+    - connected to
+    - connection
+    - connections
+    - related to
+    - relationship
+    - in common
+    - mutual
+    - both
+    - indirectly
+    - which companies
+    - which people
+    - who else
+    - other companies
+  vector_cues:
+    # summaries and explanations
+    - summarize
+    - summarise
+    - summary
+    - overview
+    - describe
+    - description
+    - explain
+    - tell me about
+    - tell me more
+    - what does
+    - details
+    - background
+    - why
+    - how does
+    # quantities and money
+    - how much
+    - revenue
+    - valuation
+    - valued
+    - price
+    - cost
+    - employees
+    - headcount
+    - how many people
+    - how many employees
+    - how big
+    - how large
+    - how old
+    - size
+    - capacity
+    - plants
+    - meters
+    - portfolio
+    - return
+    - fund
+    # dates
+    - when
+    - what year
+    - which year
+    - what date
+    - which month
+    - how long
+    # products and technology
+    - chip
+    - chips
+    - product
+    - products
+    - flagship
+    - process
+    - watts
+    - performance
+    - technology
+    - platform
+    # education
+    - study
+    - studied
+    - degree
+    - education
+    - phd
+    - mba
+    - university
+
+guardrails:
+  # a question made only of these words is small talk (no LLM call)
+  smalltalk: ["hi", "hello", "hey", "thanks", "thank you", "bye", "good morning", "good afternoon",
+              "good evening", "good night", "ok", "okay", "cool", "great", "how are you"]
+  # substring match on the normalised question (prompt-injection patterns)
+  blocked_patterns: ["ignore previous instructions", "ignore all previous", "ignore the above",
+                     "disregard all", "disregard previous", "forget your instructions",
+                     "system prompt", "reveal your prompt", "you are now", "developer mode",
+                     "jailbreak", "act as dan"]
+  # embedding similarity to these => off-topic (only if no graph entity is mentioned)
+  off_topic_examples:
+    - "What is the weather today?"
+    - "Tell me a joke"
+    - "Write a poem about the ocean"
+    - "Who won the cricket match yesterday?"
+    - "How do I cook pasta?"
+    - "What is the capital of France?"
+    - "Translate this sentence into Spanish"
+    - "What is the price of bitcoin?"
+    - "Write a Python function to sort a list"
+    - "Recommend a movie to watch tonight"
+  canned:
+    smalltalk: "Hi! Ask me something about the ingested documents."
+    off_topic: "That looks outside the scope of the loaded documents."
+    blocked: "That request can't be processed."
+    not_found: "I couldn't find this in the documents."

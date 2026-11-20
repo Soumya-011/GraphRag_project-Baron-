@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{APP_NAME}} · Developer login</title>
+  <link rel="stylesheet" href="/static/user.css">
+</head>
+<body class="login-body">
+  <main class="login-card">
+    <h1>Developer login</h1>
+    <p class="muted">Enter the password from your <code>.env</code> (<code>DEV_PASSWORD</code>).</p>
+    <form id="login-form" autocomplete="off">
+      <label for="pw" class="label">Password</label>
+      <input id="pw" type="password" autocomplete="current-password" required autofocus>
+      <button type="submit" class="primary" id="login-btn">Sign in</button>
+      <p id="login-msg" class="err" role="alert"></p>
+    </form>
+    <p class="small"><a href="/">Back to the chat</a></p>
+  </main>
+  <script>
+    "use strict";
+    document.getElementById("login-form").addEventListener("submit", async (ev) => {
+      ev.preventDefault();
+      const msg = document.getElementById("login-msg"), btn = document.getElementById("login-btn");
+      msg.textContent = ""; btn.disabled = true;
+      try {
+        const r = await fetch("/auth/login", { method: "POST", headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ password: document.getElementById("pw").value }) });
+        if (r.ok) { location.href = "/dev"; return; }
+        let d = null; try { d = await r.json(); } catch {}
+        msg.textContent = (d && d.detail) || `Login failed (${r.status})`;
+      } catch { msg.textContent = "Cannot reach the server."; }
+      btn.disabled = false;
+    });
+  </script>
+</body>
+</html>

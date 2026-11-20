@@ -1,0 +1,5 @@
+python -m eval.check_graph              
+
+Extracted triples: 131   gold: 114
+Precision: 100% (131/131)
+Recall:    100% (114/114)

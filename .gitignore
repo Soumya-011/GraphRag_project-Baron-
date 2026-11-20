@@ -1,0 +1,39 @@
+# secrets and local config
+.env
+.env.*
+!.env.example
+
+# generated data (rebuilt by python -m app.ingest)
+data/chroma/
+data/*.sqlite
+data/*.sqlite-*
+data/raw/uploads/
+data/neo4j/
+neo4j_data/
+neo4j/data/
+neo4j/logs/
+
+# eval output (keep one report in docs/ instead)
+eval/results/
+
+# python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.venv/
+venv/
+env/
+*.egg-info/
+.mypy_cache/
+.ruff_cache/
+
+# packages and archives
+*.zip
+
+# editors and OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+*.log
+legacy/

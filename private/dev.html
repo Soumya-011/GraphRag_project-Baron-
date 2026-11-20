@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{APP_NAME}} · Developer</title>
+  <link rel="stylesheet" href="/static/style.css">
+  <link rel="stylesheet" href="/static/upload.css">
+  <link rel="stylesheet" href="/dev/assets/dev.css">
+  <script src="/static/upload.js" defer></script>
+  <script src="/dev/assets/dev.js" defer></script>
+</head>
+<body>
+  <header class="top">
+    <div>
+      <h1>{{APP_NAME}} Developer</h1>
+      <p class="muted">Full diagnostics. <a href="/">Open the user page</a></p>
+    </div>
+    <div class="status">
+      <div id="health" class="pills" aria-live="polite"></div>
+      <button type="button" id="refresh-health" class="ghost" title="Re-check services">Refresh</button>
+      <button type="button" id="logout" class="ghost">Log out</button>
+    </div>
+  </header>
+
+  <main class="layout">
+    <section class="col">
+      <form id="ask-form" class="panel" autocomplete="off">
+        <label for="question" class="label">Question</label>
+        <textarea id="question" rows="2" maxlength="500" required
+                  placeholder="Which companies are linked to Priya Nair?"></textarea>
+        <div class="controls">
+          <label class="field">Route
+            <select id="route">
+              <option value="auto" selected>Auto (router picks)</option>
+              <option value="vector">Vector (normal RAG)</option>
+              <option value="graph">Graph (GraphRAG)</option>
+              <option value="hybrid">Hybrid</option>
+            </select>
+          </label>
+          <label class="check"><input type="checkbox" id="compare"> Compare normal RAG vs GraphRAG</label>
+          <button type="submit" id="ask-btn" class="primary">Ask</button>
+        </div>
+        <div id="examples" class="chips" aria-label="Example questions"></div>
+      </form>
+
+      <section id="results" class="results" aria-live="polite">
+        <p class="muted empty">Answers appear here.</p>
+      </section>
+    </section>
+
+    <aside class="col">
+      <section class="panel">
+        <h2>Guardrails: LLM calls saved</h2>
+        <div id="metrics" class="metrics"></div>
+      </section>
+
+      <section class="panel">
+        <h2>Add documents</h2>
+        <form id="upload-form">
+          <input type="file" id="files" accept=".txt,.md,.pdf" multiple>
+          <label class="check"><input type="checkbox" id="do-graph" checked> Also extract the knowledge graph (slower, uses the extraction model)</label>
+          <button type="submit" id="upload-btn" class="primary">Upload and ingest</button>
+        </form>
+        <div id="upload-out" class="small" aria-live="polite"></div>
+      </section>
+
+      <details class="panel fold" id="graph-fold">
+        <summary>Knowledge graph</summary>
+        <div class="row"><span class="muted small">Loaded when first opened.</span>
+          <button type="button" id="reload-graph" class="ghost">Reload</button></div>
+        <div id="graph-wrap"><svg id="graph" viewBox="0 0 640 420" role="img" aria-label="Knowledge graph"></svg></div>
+        <div class="legend">
+          <span><i class="dot person"></i>Person</span>
+          <span><i class="dot company"></i>Company</span>
+          <span><i class="dot location"></i>Location</span>
+          <span><i class="line used"></i>Used in the GraphRAG answer</span>
+          <span><i class="line past"></i>Past</span>
+        </div>
+        <p id="graph-note" class="muted small"></p>
+      </details>
+
+      <details class="panel fold" id="docs-fold">
+        <summary>Documents</summary>
+        <div class="row"><span class="muted small">Re-ingest or delete a document.</span>
+          <button type="button" id="reload-docs" class="ghost">Reload</button></div>
+        <div id="docs" class="docs-wrap"></div>
+      </details>
+
+      <details class="panel fold" id="eval-fold">
+        <summary>Evaluation reports</summary>
+        <div class="row3">
+          <label class="field">Report<select id="eval-a"></select></label>
+          <label class="field">Compare with<select id="eval-b"><option value="">(none)</option></select></label>
+        </div>
+        <div class="row"><span id="eval-hint" class="muted small"></span>
+          <button type="button" id="eval-full" class="ghost">Show full report</button></div>
+        <div id="eval-out" class="docs-wrap"></div>
+        <div id="eval-md" class="md"></div>
+      </details>
+
+      <details class="panel fold" id="extract-fold">
+        <summary>Extraction quality (gold triples)</summary>
+        <p class="muted small">Compares the graph with the hand-labelled triples. Uploaded documents have no labels and are left out.</p>
+        <div class="row"><label class="check"><input type="checkbox" id="extract-corpus" checked> include the 35 corpus documents</label>
+          <button type="button" id="extract-run" class="primary">Run check</button></div>
+        <div id="extract-out"></div>
+      </details>
+
+      <details class="panel fold" id="router-fold">
+        <summary>Router playground</summary>
+        <p class="muted small">See which route Auto would pick and why, without answering the question.</p>
+        <form id="router-form" class="stack">
+          <input type="text" id="router-q" placeholder="Which companies has Meridian Capital invested in?" maxlength="500" required>
+          <label class="check"><input type="checkbox" id="router-llm"> allow one router LLM call (flash-lite) if the rules cannot decide</label>
+          <button type="submit" class="primary" id="router-go">Check route</button>
+        </form>
+        <div id="router-out"></div>
+      </details>
+
+      <details class="panel fold" id="settings-wrap">
+        <summary>Settings (secrets hidden)</summary>
+        <div id="settings" class="docs-wrap"></div>
+      </details>
+    </aside>
+  </main>
+</body>
+</html>
