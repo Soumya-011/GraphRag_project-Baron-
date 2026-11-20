@@ -13,7 +13,7 @@ The point of the project is a measured answer to one question: **when does a gra
 
 ### Application Screenshots
 | Chat Page | Screenshot 2 | Screenshot 3 |
-| :---: | :---: | :---: |
+| :---: | :---: | :---: | :---: |
 | ![Chat Page](assets/screenshot_3.png) | ![Screenshot 2](assets/screenshot_2.png) | ![Screenshot 3](assets/screenshot_1.png) | !
 [Screenshot 4](assets/screenshot_4.png) |
 
