@@ -6,6 +6,34 @@ The point of the project is a measured answer to one question: **when does a gra
 
 ---
 
+## Architecture & Interface
+
+### System Flowchart
+![System Flowchart](assets/threadline_flow.png)
+
+### Application Screenshots
+| Chat Page | Screenshot 2 | Screenshot 3 |
+| :---: | :---: | :---: |
+| ![Chat Page](assets/screenshot_3.png) | ![Screenshot 2](assets/screenshot_2.png) | ![Screenshot 3](assets/screenshot_1.png) | !
+[Screenshot 4](assets/screenshot_4.png) |
+
+## Quick start
+
+1. Copy the example environment file to create your local configuration:
+   ```bash
+   cp .env.example .env
+   ```
+
+2. Start Neo4j in the background using Docker Compose:
+   ```bash
+   docker compose up -d
+   ```
+
+3. Run the ingestion pipeline:
+   ```bash
+   python -m app.ingest
+   ```
+
 ## Headline results
 
 Stress corpus: 35 short documents plus 5 core documents, 37 questions, facts deliberately scattered across files. Vector RAG was limited to the **top 2 chunks** (`vector@2`) so that retrieval limits show up clearly. Graph mode used 3 hops, 80 edges and a 4000-token context.
